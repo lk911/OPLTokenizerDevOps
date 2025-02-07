@@ -103,219 +103,185 @@ public class Lexer {
    * @return The next token in the stream.
    */
   public Token nextToken() {
-    if (isEOL(peek())) {
-      line++;
-      column=0;
-    }
-    // read the initial character
+    // Skip whitespace
     char ch = read();
-    String tokenStr="";
-    Token tkn;
     while (Character.isWhitespace(ch)) {
-      ch = read();
-    }
-    if (isEOF(ch)) {
-      tkn= new Token(TokenType.EOS, "end-of-stream", line, column);
-      return tkn;
-    }
-    
-    //single char and other comparators
-    switch (ch) {
-      case '.':
-        tkn = new Token(TokenType.DOT, ".", line, column);
-        return tkn;
-      case ':':
-        tkn = new Token(TokenType.COLON, ":", line, column);
-        return tkn;
-      case ',':
-        tkn = new Token(TokenType.COMMA, ",", line, column);
-        return tkn;
-      case '(':
-        tkn = new Token(TokenType.LPAREN, "(", line, column);
-        return tkn;
-      case ')':
-        tkn = new Token(TokenType.RPAREN, ")", line, column);
-        return tkn;
-      case '[':
-        tkn = new Token(TokenType.LBRACKET, "[", line, column);
-        return tkn;
-      case ']':
-        tkn = new Token(TokenType.RBRACKET, "]", line, column);
-        return tkn;
-      case '{':
-        tkn = new Token(TokenType.LBRACE, "{", line, column);
-        return tkn;
-      case '}':
-        tkn = new Token(TokenType.RBRACE, "}", line, column);
-        return tkn;
-      case '+':
-        tkn = new Token(TokenType.PLUS, "+", line, column);
-        return tkn;
-      case '-':
-        tkn = new Token(TokenType.MINUS, "-", line, column);
-        return tkn;
-      case '*':
-        tkn = new Token(TokenType.TIMES, "*", line, column); 
-        return tkn;
-      case '/':
-        tkn = new Token(TokenType.DIVIDE, "/", line, column);
-        return tkn;
-      case '=':
-        if (peek()=='=') {
-          tkn = new Token(TokenType.EQUAL, "==", line, column);
-          ch=read();
-          return tkn;
-        }
-        tkn = new Token(TokenType.ASSIGN, "=", line, column);
-        return tkn;
-      case '<':
-        if (peek()=='=') {
-          ch=read();
-          tkn = new Token(TokenType.LESS_EQ, "<=", line, column);
-          return tkn;
-        }
-        tkn = new Token(TokenType.LESS, "<", line, column);
-        return tkn;
-      case '>':
-        if (peek()=='=') {
-          ch=read();
-          tkn = new Token(TokenType.GREATER_EQ, ">=", line, column);
-          return tkn;
-        }
-        tkn = new Token(TokenType.GREATER, ">", line, column);
-        return tkn;
-      case '!':
-        if (peek()=='=') {
-          ch=read();
-          tkn = new Token(TokenType.NOT_EQUAL, "!=", line, column);
-          return tkn;
-        }
-        tkn = new Token(TokenType.NOT, "!", line, column);
-        return tkn;
-      case '#':
-        while (!isEOL(peek()) && !isEOF(peek())) {
-          ch = read();
-          tokenStr += ch;
-        }
-        if (isEOL(peek())) {
-            //ch = read(); 
-            line++; 
-        }
-        tkn = new Token(TokenType.COMMENT, tokenStr, line-1, column);
-        if (isEOL(peek())) {
-          column=0;
-        }
-        return tkn;
-      default:
-        break;
-    }
-    if (Character.isDigit(ch)) {
-      boolean flt=false;
-      while (Character.isDigit(peek())||peek()=='.') {
-        tokenStr+=ch;
-        if (ch=='.') {
-          flt=true;
-        }
-        ch=read();
-      }
-      if (flt) {
-        tkn= new Token(TokenType.DOUBLE_VAL, tokenStr, line, column);
-        return tkn;
-      }
-      else{
-        tkn= new Token(TokenType.INT_VAL, tokenStr, line, column);
-        return tkn;
-      }
-    }
-    if (ch=='"') {
-      while (true) {
-        tokenStr+=ch;
-        if (peek()=='"') {
-          tokenStr+=ch;
-          break;
-        }
-        ch=read();
-      }
-      tkn= new Token(TokenType.STRING_VAL, tokenStr, line, column);
-      return tkn;
-    }
-    if (Character.isLetter(ch)) {
-      while (true) {
         if (isEOL(ch)) {
-          line++;
-
+            line++;
+            column = 0;
         }
-        tokenStr+=ch;
-        switch (tokenStr) {
-          case "true":
-          case "false":
-            tkn= new Token(TokenType.BOOL_VAL, tokenStr, line, column);
-            return tkn;
-          case "null":
-            tkn = new Token(TokenType.NULL_VAL, tokenStr, line, column);
-            return tkn;
-          case "int":
-            tkn= new Token(TokenType.INT_TYPE, tokenStr, line, column);
-            return tkn;
-          case "double":
-            tkn= new Token(TokenType.DOUBLE_TYPE, tokenStr, line, column);
-            return tkn;
-          case "char":
-            tkn= new Token(TokenType.CHAR_TYPE, tokenStr, line, column);
-            return tkn;
-            case "string":
-            tkn = new Token(TokenType.STRING_TYPE, tokenStr, line, column);
-            return tkn;
-          case "bool":
-              tkn = new Token(TokenType.BOOL_TYPE, tokenStr, line, column);
-              return tkn;
-          case "void":
-              tkn = new Token(TokenType.VOID_TYPE, tokenStr, line, column);
-              return tkn;
-      
-          // Reserved words
-          case "struct":
-              tkn = new Token(TokenType.STRUCT, tokenStr, line, column);
-              return tkn;
-          case "var":
-              tkn = new Token(TokenType.VAR, tokenStr, line, column);
-              return tkn;
-          case "while":
-              tkn = new Token(TokenType.WHILE, tokenStr, line, column);
-              return tkn;
-          case "for":
-              tkn = new Token(TokenType.FOR, tokenStr, line, column);
-              return tkn;
-          case "from":
-              tkn = new Token(TokenType.FROM, tokenStr, line, column);
-              return tkn;
-          case "to":
-              tkn = new Token(TokenType.TO, tokenStr, line, column);
-              return tkn;
-          case "if":
-              tkn = new Token(TokenType.IF, tokenStr, line, column);
-              return tkn;
-          case "else":
-              tkn = new Token(TokenType.ELSE, tokenStr, line, column);
-              return tkn;
-          case "new":
-              tkn = new Token(TokenType.NEW, tokenStr, line, column);
-              return tkn;
-          case "return":
-              tkn = new Token(TokenType.RETURN, tokenStr, line, column);
-              return tkn;
-            
-          default:
-            if (peek()=='=') {
-              tkn= new Token(TokenType.ID, tokenStr, line, column);
-              return tkn;
-            }
-            break;
-        }
-        ch=read();
-      }
+        ch = read();
     }
+
+    // Handle EOF
+    if (isEOF(ch)) {
+        return new Token(TokenType.EOS, "end-of-stream", line, column);
+    }
+
+    // Handle single-character tokens and comparators
+    switch (ch) {
+        case '.':
+            return new Token(TokenType.DOT, ".", line, column);
+        case ':':
+            return new Token(TokenType.COLON, ":", line, column);
+        case ',':
+            return new Token(TokenType.COMMA, ",", line, column);
+        case '(':
+            return new Token(TokenType.LPAREN, "(", line, column);
+        case ')':
+            return new Token(TokenType.RPAREN, ")", line, column);
+        case '[':
+            return new Token(TokenType.LBRACKET, "[", line, column);
+        case ']':
+            return new Token(TokenType.RBRACKET, "]", line, column);
+        case '{':
+            return new Token(TokenType.LBRACE, "{", line, column);
+        case '}':
+            return new Token(TokenType.RBRACE, "}", line, column);
+        case '+':
+            return new Token(TokenType.PLUS, "+", line, column);
+        case '-':
+            return new Token(TokenType.MINUS, "-", line, column);
+        case '*':
+            return new Token(TokenType.TIMES, "*", line, column);
+        case '/':
+            return new Token(TokenType.DIVIDE, "/", line, column);
+        case '=':
+            if (peek() == '=') {
+                read();
+                return new Token(TokenType.EQUAL, "==", line, column);
+            }
+            return new Token(TokenType.ASSIGN, "=", line, column);
+        case '<':
+            if (peek() == '=') {
+                read();
+                return new Token(TokenType.LESS_EQ, "<=", line, column);
+            }
+            return new Token(TokenType.LESS, "<", line, column);
+        case '>':
+            if (peek() == '=') {
+                read();
+                return new Token(TokenType.GREATER_EQ, ">=", line, column);
+            }
+            return new Token(TokenType.GREATER, ">", line, column);
+        case '!':
+            if (peek() == '=') {
+                read();
+                return new Token(TokenType.NOT_EQUAL, "!=", line, column);
+            }
+            return new Token(TokenType.NOT, "!", line, column);
+        case '#':
+            StringBuilder commentStr = new StringBuilder();
+            while (!isEOL(peek()) && !isEOF(peek())) {
+                ch = read();
+                commentStr.append(ch);
+            }
+            if (isEOL(peek())) {
+                read(); // Consume the EOL character
+                line++;
+                column = 0;
+            }
+            return new Token(TokenType.COMMENT, commentStr.toString(), line - 1, column - commentStr.length());
+        default:
+            break;
+    }
+
+    // Handle numbers
+    if (Character.isDigit(ch)) {
+        StringBuilder numStr = new StringBuilder();
+        boolean isDouble = false;
+        while (Character.isDigit(peek()) || peek() == '.') {
+            numStr.append(ch);
+            if (ch == '.') {
+                if (isDouble) {
+                    error("invalid number format", line, column);
+                }
+                isDouble = true;
+            }
+            ch = read();
+        }
+        numStr.append(ch);
+        if (isDouble) {
+            return new Token(TokenType.DOUBLE_VAL, numStr.toString(), line, column - numStr.length() + 1);
+        } else {
+            return new Token(TokenType.INT_VAL, numStr.toString(), line, column - numStr.length() + 1);
+        }
+    }
+
+    // Handle strings
+    if (ch == '"') {
+        StringBuilder str = new StringBuilder();
+        while (true) {
+            ch = read();
+            if (isEOL(ch) || isEOF(ch)) {
+                error("non-terminated string", line, column);
+            }
+            if (ch == '"') {
+                break;
+            }
+            str.append(ch);
+        }
+        return new Token(TokenType.STRING_VAL, str.toString(), line, column - str.length());
+    }
+
+    // Handle identifiers and reserved words
+    if (Character.isLetter(ch)) {
+        StringBuilder idStr = new StringBuilder();
+        while (Character.isLetterOrDigit(peek()) || peek() == '_') {
+            idStr.append(ch);
+            ch = read();
+        }
+        idStr.append(ch);
+        String id = idStr.toString();
+        switch (id) {
+            case "true":
+            case "false":
+                return new Token(TokenType.BOOL_VAL, id, line, column - id.length() + 1);
+            case "null":
+                return new Token(TokenType.NULL_VAL, id, line, column - id.length() + 1);
+            case "int":
+                return new Token(TokenType.INT_TYPE, id, line, column - id.length() + 1);
+            case "double":
+                return new Token(TokenType.DOUBLE_TYPE, id, line, column - id.length() + 1);
+            case "string":
+                return new Token(TokenType.STRING_TYPE, id, line, column - id.length() + 1);
+            case "bool":
+                return new Token(TokenType.BOOL_TYPE, id, line, column - id.length() + 1);
+            case "void":
+                return new Token(TokenType.VOID_TYPE, id, line, column - id.length() + 1);
+            case "struct":
+                return new Token(TokenType.STRUCT, id, line, column - id.length() + 1);
+            case "var":
+                return new Token(TokenType.VAR, id, line, column - id.length() + 1);
+            case "while":
+                return new Token(TokenType.WHILE, id, line, column - id.length() + 1);
+            case "for":
+                return new Token(TokenType.FOR, id, line, column - id.length() + 1);
+            case "from":
+                return new Token(TokenType.FROM, id, line, column - id.length() + 1);
+            case "to":
+                return new Token(TokenType.TO, id, line, column - id.length() + 1);
+            case "if":
+                return new Token(TokenType.IF, id, line, column - id.length() + 1);
+            case "else":
+                return new Token(TokenType.ELSE, id, line, column - id.length() + 1);
+            case "new":
+                return new Token(TokenType.NEW, id, line, column - id.length() + 1);
+            case "return":
+                return new Token(TokenType.RETURN, id, line, column - id.length() + 1);
+            case "and":
+                return new Token(TokenType.AND, id, line, column - id.length() + 1);
+            case "or":
+                return new Token(TokenType.OR, id, line, column - id.length() + 1);
+            case "not":
+                return new Token(TokenType.NOT, id, line, column - id.length() + 1);
+            default:
+                return new Token(TokenType.ID, id, line, column - id.length() + 1);
+        }
+    }
+
+    // Handle unrecognized symbols
+    error("unrecognized symbol '" + ch + "'", line, column);
     return null;
   }
-
 }
