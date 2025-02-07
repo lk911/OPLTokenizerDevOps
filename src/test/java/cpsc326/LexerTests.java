@@ -674,7 +674,7 @@ class LexerTests {
   //    unrecognized symbols.
   // 
   //----------------------------------------------------------------------  
-  
+
   @Test
   void combinedSymbolsAndLiterals() {
       var p = "if (x <= 10.5) and not flag return true";
@@ -697,8 +697,8 @@ class LexerTests {
   void nestedStructuresAndStrings() {
       var p = "struct Person { string name int age } p = new Person() p.name = \"John Doe\""; 
       Lexer lexer = new Lexer(istream(p));
-      var types = List.of(TokenType.STRUCT, TokenType.ID, TokenType.LBRACE, TokenType.STRING_TYPE, TokenType.ID, TokenType.INT_TYPE, TokenType.ID, TokenType.RBRACE, TokenType.ID, TokenType.ASSIGN, TokenType.NEW, TokenType.ID, TokenType.LPAREN, TokenType.RPAREN, TokenType.ID, TokenType.DOT, TokenType.ID, TokenType.ASSIGN, TokenType.STRING_VAL); // Removed all SEMICOLONs
-      var lexemes = List.of("struct", "Person", "{", "string", "name", "int", "age", "}", "p", "=", "new", "Person", "(", ")", "p", ".", "name", "=", "John Doe"); // Removed all ;
+      var types = List.of(TokenType.STRUCT, TokenType.ID, TokenType.LBRACE, TokenType.STRING_TYPE, TokenType.ID, TokenType.INT_TYPE, TokenType.ID, TokenType.RBRACE, TokenType.ID, TokenType.ASSIGN, TokenType.NEW, TokenType.ID, TokenType.LPAREN, TokenType.RPAREN, TokenType.ID, TokenType.DOT, TokenType.ID, TokenType.ASSIGN, TokenType.STRING_VAL); 
+      var lexemes = List.of("struct", "Person", "{", "string", "name", "int", "age", "}", "p", "=", "new", "Person", "(", ")", "p", ".", "name", "=", "John Doe"); 
       for (int i = 0; i < types.size(); ++i) {
           Token t = lexer.nextToken();
           assertEquals(types.get(i), t.tokenType);
@@ -712,11 +712,11 @@ class LexerTests {
 
   @Test
   void complexArithmeticAndComparisons() {
-      var p = "result = (x * 2 + y / 4) >= z and (a < b or c != d)"; // No semicolon
+      var p = "result = (x * 2 + y / 4) >= z and (a < b or c != d)"; 
       Lexer lexer = new Lexer(istream(p));
       // Define expected token types and lexemes
       var types = List.of(TokenType.ID, TokenType.ASSIGN, TokenType.LPAREN, TokenType.ID, TokenType.TIMES, TokenType.INT_VAL, TokenType.PLUS, TokenType.ID, TokenType.DIVIDE, TokenType.INT_VAL, TokenType.RPAREN, TokenType.GREATER_EQ, TokenType.ID, TokenType.AND, TokenType.LPAREN, TokenType.ID, TokenType.LESS, TokenType.ID, TokenType.OR, TokenType.ID, TokenType.NOT_EQUAL, TokenType.ID, TokenType.RPAREN); // Removed SEMICOLON
-      var lexemes = List.of("result", "=", "(", "x", "*", "2", "+", "y", "/", "4", ")", ">=", "z", "and", "(", "a", "<", "b", "or", "c", "!=", "d", ")"); // Removed ;
+      var lexemes = List.of("result", "=", "(", "x", "*", "2", "+", "y", "/", "4", ")", ">=", "z", "and", "(", "a", "<", "b", "or", "c", "!=", "d", ")"); 
       for (int i = 0; i < types.size(); ++i) {
           Token t = lexer.nextToken();
           assertEquals(types.get(i), t.tokenType);
