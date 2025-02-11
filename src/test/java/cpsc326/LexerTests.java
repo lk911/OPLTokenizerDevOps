@@ -79,7 +79,7 @@ class LexerTests {
     assertEquals(TokenType.COMMENT, t.tokenType);
     assertEquals(" a comment", t.lexeme);
     assertEquals(1, t.line);
-    assertEquals(11, t.column);
+    assertEquals(1, t.column);
     t = lexer.nextToken();
     assertEquals(TokenType.EOS, t.tokenType);
     assertEquals("end-of-stream", t.lexeme);
@@ -99,11 +99,11 @@ class LexerTests {
     assertEquals(TokenType.COMMENT, t.tokenType);
     assertEquals(" a comment", t.lexeme);
     assertEquals(1, t.line);
-    assertEquals(11, t.column);
+    assertEquals(1, t.column);
     t = lexer.nextToken();
     assertEquals(" another comment", t.lexeme);
     assertEquals(2, t.line);
-    assertEquals(18, t.column);
+    assertEquals(1, t.column);
     assertEquals(TokenType.EOS, lexer.nextToken().tokenType);    
   }
 
@@ -161,17 +161,17 @@ class LexerTests {
     assertEquals(TokenType.LESS_EQ, t.tokenType);
     assertEquals("<=", t.lexeme);
     assertEquals(1, t.line);
-    assertEquals(4, t.column);
+    assertEquals(3, t.column);
     t = lexer.nextToken();        
     assertEquals(TokenType.GREATER_EQ, t.tokenType);
     assertEquals(">=", t.lexeme);
     assertEquals(1, t.line);
-    assertEquals(6, t.column);
+    assertEquals(5, t.column);
     t = lexer.nextToken();        
     assertEquals(TokenType.NOT_EQUAL, t.tokenType);
     assertEquals("!=", t.lexeme);
     assertEquals(1, t.line);
-    assertEquals(8, t.column);
+    assertEquals(7, t.column);
     assertEquals(TokenType.EOS, lexer.nextToken().tokenType);
   }
 
