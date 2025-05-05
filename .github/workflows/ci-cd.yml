@@ -37,7 +37,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
       
     - name: Build Docker image
-      run: docker build -t mypl .
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/mypl:latest .
       
     - name: Save Docker image
       uses: actions/upload-artifact@v4
@@ -51,7 +51,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: mypl:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/mypl:latest
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }} 
