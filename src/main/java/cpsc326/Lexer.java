@@ -68,14 +68,15 @@
     * false otherwise.
     */
    private boolean isEOL(char ch) {
-     if (ch == '\n')
+     if (ch == '\n') {
        return true;
+     }
      if (ch == '\r' && peek() == '\n') {
        read();
        return true;
-     }
-     else if (ch == '\r')
+     } else if (ch == '\r') {
        return true;
+     }
      return false;
    }
   
@@ -176,7 +177,13 @@
         return null;
     }
     
-    private Token handleTwoChar(char firstChar, TokenType singleType, TokenType doubleType, String doubleLexeme, int tempLine, int tempColumn) {
+    private Token handleTwoChar(
+        char firstChar,
+        TokenType singleType,
+        TokenType doubleType,
+        String doubleLexeme,
+        int tempLine,
+        int tempColumn) {
         if (peek() == '=') {
             read(); // Consume the second character
             return new Token(doubleType, doubleLexeme, tempLine, tempColumn);
