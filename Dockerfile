@@ -8,4 +8,5 @@ RUN mvn clean package assembly:single
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/mypl-jar-with-dependencies.jar ./mypl.jar
+COPY examples ./examples
 ENTRYPOINT ["java", "-jar", "mypl.jar"] 
