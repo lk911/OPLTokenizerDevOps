@@ -3,7 +3,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY checkstyle.xml .
 COPY src ./src
-RUN mvn clean package
+RUN mvn clean package assembly:single
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
